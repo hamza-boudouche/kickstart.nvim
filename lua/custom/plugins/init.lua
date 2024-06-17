@@ -2,4 +2,182 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
-return {}
+
+vim.keymap.set('n', '<leader>fm', function()
+  require('conform').format()
+end, { desc = 'format the current buffer' })
+
+vim.keymap.set('n', '<leader>k', function()
+  vim.lsp.buf.signature_help()
+end, { desc = 'show function signature' })
+
+vim.keymap.set({ 'n', 'i' }, '<C-c>', function()
+  -- If we find a floating window, close it.
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative ~= '' then
+      vim.api.nvim_win_close(win, true)
+    end
+  end
+end, { desc = 'close all floating windows' })
+
+vim.keymap.set('v', '>', '>gv', { desc = 'indent selected block' })
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'move block down' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'move block up' })
+
+vim.opt.smartindent = true
+
+return {
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('oil').setup {
+        default_file_explorer = true,
+        -- Id is automatically added at the beginning, and name at the end
+        -- See :help oil-columns
+        columns = {
+          'icon',
+          'permissions',
+          'size',
+          'mtime',
+        },
+        keymaps = {
+          ['g?'] = 'actions.show_help',
+          ['<CR>'] = 'actions.select',
+          ['<C-v>'] = { 'actions.select', opts = { vertical = true }, desc = 'Open the entry in a vertical split' },
+          ['<C-h>'] = { 'actions.select', opts = { horizontal = true }, desc = 'Open the entry in a horizontal split' },
+          ['<C-t>'] = { 'actions.select', opts = { tab = true }, desc = 'Open the entry in new tab' },
+          ['<C-p>'] = 'actions.preview',
+          ['<C-c>'] = 'actions.close',
+          ['<C-l>'] = 'actions.refresh',
+          ['-'] = 'actions.parent',
+          ['_'] = 'actions.open_cwd',
+          ['`'] = 'actions.cd',
+          ['~'] = { 'actions.cd', opts = { scope = 'tab' }, desc = ':tcd to the current oil directory' },
+          ['gs'] = 'actions.change_sort',
+          ['gx'] = 'actions.open_external',
+          ['g.'] = 'actions.toggle_hidden',
+          ['g\\'] = 'actions.toggle_trash',
+        },
+        -- Set to false to disable all of the above keymaps
+        use_default_keymaps = false,
+      }
+      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+    end,
+  },
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require('toggleterm').setup {
+        open_mapping = [[<A-f>]],
+        direction = 'float',
+        close_on_exit = false,
+        float_opts = {
+          width = 170,
+          height = 40,
+        },
+      }
+    end,
+  },
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
+  },
+  {
+    'smoka7/hop.nvim',
+    config = function()
+      require('hop').setup { keys = 'etovxqpdygfblzhckisura' }
+      vim.keymap.set('n', 'm', ':HopWordMW<CR>', { desc = 'hop to any word in the current buffer' })
+    end,
+    lazy = false,
+  },
+  {
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup {
+        log_level = 'error',
+      }
+    end,
+    lazy = false,
+  },
+  {
+    'laytan/cloak.nvim',
+    opts = {
+      enabled = true,
+      cloak_character = '*',
+      highlight_group = 'Comment',
+      patterns = {
+        {
+          file_pattern = {
+            '.env*',
+            'wrangler.toml',
+            '.dev.vars',
+          },
+          cloak_pattern = '=.+',
+        },
+      },
+    },
+  },
+  {
+    'olexsmir/gopher.nvim',
+    ft = 'go',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('gopher').setup {
+        gotag = {
+          transform = 'snakecase',
+        },
+      }
+      vim.keymap.set('n', '<leader>ie', ':GoIfErr<CR>', { desc = 'insert go error handling block' })
+    end,
+    build = function()
+      vim.cmd.GoInstallDeps()
+    end,
+    opts = {},
+  },
+  {
+    'max397574/better-escape.nvim',
+    event = 'InsertEnter',
+    config = function()
+      require('better_escape').setup()
+    end,
+  },
+  {
+    'folke/trouble.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      icons = false,
+    },
+    config = function()
+      vim.keymap.set('n', '<leader>xx', ':TroubleToggle<CR>', { desc = 'show all errors' })
+      function EnableLineWrapForTrouble()
+        -- Check if the current buffer's file type is "Trouble"
+        if vim.bo.filetype == 'Trouble' then
+          -- Enable line wrap
+          vim.wo.wrap = true
+        else
+          -- Disable line wrap
+          vim.wo.wrap = false
+        end
+      end
+
+      -- Set up an autocmd to trigger the function when a buffer is loaded
+      vim.cmd [[
+      augroup LineWrapForTrouble
+          autocmd!
+          autocmd BufEnter * lua EnableLineWrapForTrouble()
+      augroup END
+      ]]
+    end,
+    lazy = false,
+  },
+}
