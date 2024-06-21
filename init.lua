@@ -175,9 +175,9 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-vim.api.nvim_command("autocmd TermOpen * startinsert")             -- starts in insert mode
-vim.api.nvim_command("autocmd TermOpen * setlocal nonumber norelativenumber")       -- no numbers
-vim.api.nvim_command("autocmd TermEnter * setlocal signcolumn=no") -- no sign column
+vim.api.nvim_command 'autocmd TermOpen * startinsert' -- starts in insert mode
+vim.api.nvim_command 'autocmd TermOpen * setlocal nonumber norelativenumber' -- no numbers
+vim.api.nvim_command 'autocmd TermEnter * setlocal signcolumn=no' -- no sign column
 
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -194,18 +194,22 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- makes life slightly easier 
+-- makes life slightly easier
 vim.keymap.set('n', ';', ':', { desc = 'substitute ; with :' })
 
--- don't write super long lines :-) 
-vim.opt.colorcolumn = "80"
+-- don't write super long lines :-)
+vim.opt.colorcolumn = '80'
 
 -- highlight search results incrementally
 vim.opt.incsearch = true
 
--- Leader+x to close the current buffer 
-vim.keymap.set('n', '<leader>x', '<cmd>q<CR>')
+-- close the current buffer
+vim.keymap.set('n', '<leader>x', '<cmd>bdelete<CR>', { desc = 'close current buffer' })
+-- force close current buffer
+vim.keymap.set('n', '<leader>X', '<cmd>bdelete!<CR>', { desc = 'force close current buffer' })
 
+-- new empty buffer
+vim.keymap.set('n', '<leader>n', '<cmd>enew<CR>', { desc = 'open a new empty buffer' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -575,9 +579,96 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        gopls = {
+          cmd = { 'gopls' },
+          filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+          root_dir = require('lspconfig.util').root_pattern('go.work', 'go.mod', '.git'),
+          settings = {
+            gopls = {
+              usePlaceholders = true,
+              analyses = {
+                unusedparams = true,
+              },
+              staticcheck = true,
+              gofumpt = true,
+            },
+          },
+        },
+        pyright = {
+          cmd = { 'pyright-langserver', '--stdio' },
+          filetypes = { 'python' },
+          root_dir = require('lspconfig.util').root_pattern(
+            'pyproject.toml',
+            'setup.py',
+            'setup.cfg',
+            'requirements.txt',
+            'Pipfile',
+            'pyrightconfig.json',
+            '.git'
+          ),
+          single_file_support = true,
+          settings = {
+            pyright = {
+              disableLanguageServices = false,
+              disableOrganizeImports = false,
+            },
+            python = {
+              analysis = {
+                autoImportCompletions = true,
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                typeCheckingMode = 'basic',
+                diagnosticMode = 'openFilesOnly',
+              },
+            },
+          },
+        },
+        helm_ls = {
+          cmd = { 'helm_ls', 'serve' },
+          filetypes = { 'helm', 'helmfile', 'yaml' },
+          root_dir = require('lspconfig.util').root_pattern 'Chart.yaml',
+          settings = {
+            ['helm-ls'] = {
+              logLevel = 'info',
+              valuesFiles = {
+                mainValuesFile = 'values.yaml',
+                lintOverlayValuesFile = 'values.lint.yaml',
+                additionalValuesFilesGlobPattern = 'values*.yaml',
+              },
+              yamlls = {
+                enabled = true,
+                diagnosticsLimit = 50,
+                showDiagnosticsDirectly = false,
+                path = 'yaml-language-server',
+                config = {
+                  schemas = {
+                    kubernetes = 'templates/**',
+                  },
+                  completion = true,
+                  hover = true,
+                  -- any other config from https://github.com/redhat-developer/yaml-language-server#language-server-settings
+                },
+              },
+            },
+          },
+        },
+        rust_analyzer = {
+          filetypes = { 'rust' },
+          root_dir = require('lspconfig.util').root_pattern 'Cargo.toml',
+          settings = {
+            ['rust-analyzer'] = {
+              cargo = {
+                allFeatures = true,
+              },
+            },
+          },
+        },
+        ['bash-language-server'] = {
+          cmd = { 'bash-language-server', '--start' },
+          filetypes = { 'sh' },
+        },
+        solargraph = {},
+        sorbet = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -662,7 +753,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
@@ -738,7 +829,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines

@@ -180,4 +180,48 @@ return {
     end,
     lazy = false,
   },
+  {
+    'akinsho/bufferline.nvim',
+    version = '*',
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      vim.opt.termguicolors = true
+      require('bufferline').setup {
+        highlights = {
+          buffer_selected = { bold = true },
+          diagnostic_selected = { bold = true },
+          info_selected = { bold = true },
+          info_diagnostic_selected = { bold = true },
+          warning_selected = { bold = true },
+          warning_diagnostic_selected = { bold = true },
+          error_selected = { bold = true },
+          error_diagnostic_selected = { bold = true },
+        },
+        options = {
+          diagnostics_indicator = function(count, level, _, _)
+            local icon = level:match 'error' and ' ' or ' '
+            return ' ' .. icon .. count
+          end,
+        },
+      }
+      vim.keymap.set('n', '<Tab>', '<CMD>BufferLineCycleNext<CR>')
+      vim.keymap.set('n', '<S-Tab>', '<CMD>BufferLineCyclePrev<CR>')
+    end,
+  },
+  {
+    'someone-stole-my-name/yaml-companion.nvim',
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
+    config = function()
+      require('telescope').load_extension 'yaml_schema'
+      require('lspconfig')['yamlls'].setup(require('yaml-companion').setup {})
+      vim.keymap.set('n', '<leader>ts', '<CMD>Telescope yaml_schema<CR>', { desc = '[t]elescope yaml [s]chema picker' })
+      vim.keymap.set('n', '<leader>DD', function()
+        vim.diagnostic.disable()
+      end, { desc = '[D]isable diagnostics' })
+    end,
+  },
 }
