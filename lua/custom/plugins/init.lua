@@ -24,6 +24,9 @@ vim.keymap.set('v', '>', '>gv', { desc = 'indent selected block' })
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'move block down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'move block up' })
 
+-- thank u nvchad
+vim.keymap.set('x', 'p', 'p:let @+=@0<CR>:let @"=@0<CR>')
+
 vim.opt.smartindent = true
 
 return {
