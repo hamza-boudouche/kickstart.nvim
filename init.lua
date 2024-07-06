@@ -670,7 +670,7 @@ require('lazy').setup({
         solargraph = {},
         sorbet = {},
         ocamllsp = {
-          cmd = { 'ocamllsp' },
+          cmd = { vim.env.OPAM_SWITCH_PREFIX .. '/bin/ocamllsp' },
           filetypes = { 'ocaml', 'ocaml.menhir', 'ocaml.interface', 'ocaml.ocamllex', 'reason', 'dune' },
           root_dir = require('lspconfig.util').root_pattern('*.opam', 'esy.json', 'package.json', '.git', 'dune-project', 'dune-workspace'),
         },
