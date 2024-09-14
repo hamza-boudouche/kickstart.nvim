@@ -242,7 +242,7 @@ return {
       require('lspconfig')['yamlls'].setup(require('yaml-companion').setup {})
       vim.keymap.set('n', '<leader>ts', '<CMD>Telescope yaml_schema<CR>', { desc = '[t]elescope yaml [s]chema picker' })
       vim.keymap.set('n', '<leader>DD', function()
-        vim.diagnostic.disable()
+        vim.diagnostic.enable(false)
       end, { desc = '[D]isable diagnostics' })
     end,
   },
