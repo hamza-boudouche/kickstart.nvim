@@ -1,5 +1,89 @@
 # kickstart.nvim
 
+## My keybindings
+
+### Diagnostics stuff
+| shortcut  | what it does              | explanation                         |
+|-----------|---------------------------|-------------------------------------|
+| [d        | vim.diagnostic.goto_prev  | Go to previous [D]iagnostic message |
+| ]d        | vim.diagnostic.goto_next  | Go to next [D]iagnostic message     |
+| Leader-e | vim.diagnostic.open_float | Show diagnostic [E]rror messages    |
+| Leader-q | vim.diagnostic.setloclist | Open diagnostic [Q]uickfix list     |
+
+### Terminal stuff
+| shortcut   | what it does | explanation                | more info        |
+|------------|--------------|----------------------------|------------------|
+| Esc-Esc | C-\\\\ C-n  | Exit terminal mode         | in terminal mode |
+| Alt-f      | toggleterm   | open a [f]loating terminal |                  |
+
+### Buffers
+| shortcut  | what it does      | explanation                |
+|-----------|-------------------|----------------------------|
+| Leader-n | enew     | open a new empty buffer    |
+| Leader-x | bdelete  | close current buffer       |
+| Leader-X | bdelete! | force close current buffer |
+| Leader-f | stevearc/conform.nvim | [F]ormat buffer |
+| Tab       | bufferline            | next buffer in line      |
+| S-Tab     | bufferline            | previous buffer in line  |
+| Ctrl-e    | neotree               | open neotree             |
+| Ctrl-q    | neotree               | close neotree            |
+| -         | oil                   | open parent folder       |
+| g.        | oil                   | toggle hidden            |
+| Ctrl-c       | oil                   | close oil                |
+| Ctrl-p       | oil                   | toggle preview           |
+| Ctrl-v       | oil                   | open in vertical split   |
+| Ctrl-h       | oil                   | open in horizontal split |
+
+
+### Telescope
+| shortcut   | what it does                      | explanation                    | more info                             |
+|------------|-----------------------------------|--------------------------------|---------------------------------------|
+| Leader-sh | builtin.help_tags                 | [S]earch [H]elp                |                                       |
+| Leader-sk | builtin.keymaps                   | [S]earch [K]eymaps             |                                       |
+| Leader-sf | builtin.find_files                | [S]earch [F]iles               | in current workspace                  |
+| Leader-sw | builtin.grep_string               | [S]earch current [W]ord        | not selected, aka in normal mode      |
+| Leader-sd | builtin.diagnostics               | [S]earch [D]iagnostics         |                                       |
+| Leader-sr | builtin.resume                    | [S]earch [R]esume              |                                       |
+| Leader-s. | builtin.oldfiles                  | [S]earch Recent Files          | not limited to the current workspace! |
+| Leader-sb | builtin.buffers                   | [S]earch in existing buffers   |                                       |
+| Leader-sn | builtin.find_files                | [S]earch [N]eovim conf files   |                                       |
+| Leader-s/ | builtin.live_grep                 | [S]earch in Open Files         |                                       |
+| Leader-/  | builtin.current_buffer_fuzzy_find | Fuzzy search in current buffer |                                       |
+
+### LSP
+| shortcut   | what it does                  | explanation             | more info                                                          |
+|------------|-------------------------------|-------------------------|--------------------------------------------------------------------|
+| gd         | lsp_definitions               | [G]oto [D]efinition     |                                                                    |
+| gD         | vim.lsp.buf.declaration       | [G]oto [D]eclaration    |                                                                    |
+| gr         | lsp_references                | [G]oto [R]eferences     |                                                                    |
+| gI         | lsp_implementations           | [G]oto [I]mplementation |                                                                    |
+| Leader-D  | lsp_type_definitions          | Type [D]efinition       | Jump to type of word under cursor                                  |
+| Leader-ds | lsp_document_symbols          | [D]ocument [S]ymbols    | Fuzzy find symbols (variables, functions, types) in current buffer |
+| Leader-ws | lsp_dynamic_workspace_symbols | [W]orkspace [S]ymbols   |                                                                    |
+| Leader-rn | vim.lsp.buf.rename            | [R]e[n]ame              | rename var under cursor, works across files                        |
+| Leader-ca | vim.lsp.buf.code_action       | [C]ode [A]ction         | mostly to fix warnings or obvious errors                           |
+| K          | vim.lsp.buf.hover             | Hover Documentation     | press again to move cursor to that window                          |
+| Ctrl-n        | cmp.mapping.select_next_item()| next autocomplete suggestion                      |   |
+| Ctrl-p        | cmp.mapping.select_prev_item() | previous autocomplete suggestion                  |   |
+| Ctrl-b        | cmp.mapping.scroll_docs(-4)    | scroll the docs floating window                   |   |
+| Ctrl-f        | cmp.mapping.scroll_docs(4)     | scroll the docs floating window                   |   |
+| Ctrl-Space    | cmp.mapping.complete           | trigger autocompletion suggestions                |   |
+| Ctrl-l        | luasnip                        | snippet next expansion location (insert mode)     |   |
+| Ctrl-h        | luasnip                        | snippet previous expansion location (insert mode) |   |
+
+### Git
+| shortcut   | what it does                  | explanation             |
+|------------|-------------------------------|-------------------------|
+| ]c         | gitsigns              | Jump to next git [c]hange     |
+| [c         | gitsigns              | Jump to previous git [c]hange |
+| Leader-hb | gitsigns              | git [b]lame line              |
+| Leader-hd | gitsigns              | git [d]iff against index      |
+
+### Random
+| shortcut | what it does          | explanation                  |
+|----------|-----------------------|------------------------------|
+| gc       | numToStr/Comment.nvim | comment visual regions/lines |
+
 ## Introduction
 
 A starting point for Neovim that is:
@@ -131,7 +215,7 @@ examples of adding popularly requested plugins.
   * The main purpose of kickstart is to serve as a teaching tool and a reference
     configuration that someone can easily use to `git clone` as a basis for their own.
     As you progress in learning Neovim and Lua, you might consider splitting `init.lua`
-    into smaller parts. A fork of kickstart that does this while maintaining the 
+    into smaller parts. A fork of kickstart that does this while maintaining the
     same functionality is available here:
     * [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim)
   * Discussions on this topic can be found here:
