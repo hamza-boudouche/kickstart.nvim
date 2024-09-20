@@ -210,7 +210,6 @@ return {
       vim.opt.termguicolors = true
       require('bufferline').setup {
         highlights = {
-          buffer_selected = { bold = true },
           diagnostic_selected = { bold = true },
           info_selected = { bold = true },
           info_diagnostic_selected = { bold = true },
@@ -218,6 +217,62 @@ return {
           warning_diagnostic_selected = { bold = true },
           error_selected = { bold = true },
           error_diagnostic_selected = { bold = true },
+          fill = {
+            bg = '#282828',
+          },
+          background = {
+            bg = '#3c3836',
+            fg = '#fbf1c7',
+          },
+          close_button = {
+            fg = '#fb4934',
+            bg = '#3c3836',
+          },
+          close_button_selected = {
+            fg = '#cc241d',
+            bg = '#7c6f64',
+          },
+          separator = {
+            bold = true,
+            fg = '#3c3836',
+            bg = '#3c3836',
+          },
+          indicator_selected = {
+            bold = true,
+            fg = '#3c3836',
+            bg = '#7c6f64',
+          },
+          duplicate = {
+            italic = true,
+            fg = '#fbf1c7',
+            bg = '#3c3836',
+          },
+          duplicate_selected = {
+            italic = true,
+            fg = '#fbf1c7',
+            bg = '#7c6f64',
+          },
+          buffer_selected = {
+            italic = true,
+            fg = '#fbf1c7',
+            bg = '#7c6f64',
+          },
+          modified = {
+            fg = '#fabd2f',
+            bg = '#3c3836',
+          },
+          modified_visible = {
+            fg = '#fabd2f',
+            bg = '#3c3836',
+          },
+          modified_selected = {
+            fg = '#fabd2f',
+            bg = '#3c3836',
+          },
+          trunc_marker = {
+            bg = '#3c3836',
+            fg = '#3c3836',
+          },
         },
         options = {
           diagnostics_indicator = function(count, level, _, _)
