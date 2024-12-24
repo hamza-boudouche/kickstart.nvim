@@ -28,6 +28,7 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'move block up' })
 vim.keymap.set('x', 'p', 'p:let @+=@0<CR>:let @"=@0<CR>')
 
 vim.opt.smartindent = true
+vim.opt.clipboard = 'unnamedplus'
 
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('trim_whitespaces', { clear = true }),
@@ -47,6 +48,16 @@ vim.api.nvim_create_autocmd('FileType', {
     })
   end,
 })
+
+vim.api.nvim_create_user_command('DiagnosticToggle', function()
+  local config = vim.diagnostic.config
+  local vt = config().virtual_text
+  config {
+    virtual_text = not vt,
+    underline = not vt,
+    signs = not vt,
+  }
+end, { desc = 'toggle diagnostic' })
 
 return {
   {
