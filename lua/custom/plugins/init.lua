@@ -88,6 +88,21 @@ vim.api.nvim_create_user_command('DiagnosticToggle', function()
   }
 end, { desc = 'toggle diagnostic' })
 
+-- Function to add a Markdown checkbox on the next line
+function AddMarkdownCheckbox()
+  local current_line = vim.api.nvim_get_current_line()
+  local indentation = string.match(current_line, '^%s*') or ''
+
+  local new_line = indentation .. '- [ ] '
+
+  local current_row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, current_row, current_row, false, { new_line })
+
+  vim.api.nvim_win_set_cursor(0, { current_row + 1, #new_line })
+end
+
+vim.keymap.set('n', '<leader>ca', AddMarkdownCheckbox, { desc = 'add markdown checkbox' })
+
 return {
   {
     'stevearc/oil.nvim',
