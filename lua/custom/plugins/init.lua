@@ -362,34 +362,81 @@ return {
     end,
   },
   {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
+    'olimorris/codecompanion.nvim',
     opts = {},
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'ravitemer/mcphub.nvim',
+    },
     config = function()
-      require('render-markdown').setup {
-        code = {
-          sign = false,
+      require('codecompanion').setup {
+        strategies = {
+          chat = {
+            adapter = 'copilot',
+          },
+          inline = {
+            adapter = 'copilot',
+          },
+          agent = {
+            adapter = 'copilot',
+          },
+        },
+        extensions = {
+          mcphub = {
+            callback = 'mcphub.extensions.codecompanion',
+            opts = {
+              make_vars = true,
+              make_slash_commands = true,
+              show_result_in_chat = true,
+            },
+          },
         },
       }
     end,
   },
   {
-    'kevinhwang91/nvim-ufo',
-    dependencies = { 'kevinhwang91/promise-async' },
+    'OXY2DEV/markview.nvim',
+    lazy = false,
+    opts = {
+      preview = {
+        filetypes = { 'markdown', 'codecompanion' },
+        ignore_buftypes = {},
+      },
+    },
+  },
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    build = ':Copilot auth',
+    event = 'InsertEnter',
     config = function()
-      -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
-      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-
-      require('ufo').setup {
-        provider_selector = function(bufnr, filetype, buftype)
-          return { 'treesitter', 'indent' }
-        end,
+      require('copilot').setup {
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+        },
+        panel = {
+          enabled = true,
+          auto_refresh = true,
+        },
       }
     end,
+  },
+  {
+    'echasnovski/mini.diff',
+    config = function()
+      local diff = require 'mini.diff'
+      diff.setup {
+        -- Disabled by default
+        source = diff.gen_source.none(),
+      }
+    end,
+  },
+  {
+    'sourcegraph/amp.nvim',
+    branch = 'main',
+    lazy = false,
+    opts = { auto_start = true, log_level = 'info' },
   },
 }
