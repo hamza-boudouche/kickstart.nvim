@@ -164,14 +164,6 @@ return {
     end,
   },
   {
-    'iamcco/markdown-preview.nvim',
-    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-    ft = { 'markdown' },
-    build = function()
-      vim.fn['mkdp#util#install']()
-    end,
-  },
-  {
     'smoka7/hop.nvim',
     config = function()
       require('hop').setup { keys = 'etovxqpdygfblzhckisura' }
@@ -354,7 +346,7 @@ return {
     },
     config = function()
       require('telescope').load_extension 'yaml_schema'
-      require('lspconfig')['yamlls'].setup(require('yaml-companion').setup {})
+      vim.lsp.config('yamlls', require('yaml-companion').setup {})
       vim.keymap.set('n', '<leader>ts', '<CMD>Telescope yaml_schema<CR>', { desc = '[t]elescope yaml [s]chema picker' })
       vim.keymap.set('n', '<leader>DD', function()
         vim.diagnostic.enable(false)
